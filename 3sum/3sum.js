@@ -31,3 +31,5 @@ const threeSum = nums => {
     }
     return result
 }
+
+currMax = lastMax < 0 ? arr[index] : arr[index] + lastMax

@@ -1,19 +1,36 @@
+const trampoline = kont => {
+    while (typeof kont === 'function')
+        kont = kont()
+
+    return kont.val
+}
+
 /**
  * @param {number[]} height
  * @return {number}
  */
 const maxArea = height => {
-    let low = 0
-    let high = height.length - 1
-    let max = 0
-    while (low < high) {
-        max = Math.max(max, (high - low) * Math.min(height[low], height[high]))
-        if (height[low] < height[high]) {
-            low++
-            continue
+    const h = (condition, f, n) => condition(n) ? n : h(condition, f, f(n))
+
+    const _maxArea = (left, right, curr) => {
+        if (right <= left)
+            return { val: curr }
+
+        const max = Math.max(Math.min(height[left], height[right]) * (right - left), curr)
+
+        if (height[left] >= height[right]) {
+            const condition = n => height[n] > height[right] || n <= left
+            const newRight = h(condition, n => n - 1, right)
+            return _maxArea.bind(null, left, newRight, max)
         }
-        high--
+
+        const condition = n => height[n] > height[left] || n >= right
+        const newLeft = h(condition, n => n + 1, left)
+        return _maxArea.bind(null, newLeft, right, max)
     }
 
-    return max
+    return trampoline(_maxArea.bind(
+        null, 0, height.length - 1, -Infinity)
+    )
 }
+
