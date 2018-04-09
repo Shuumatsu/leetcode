@@ -76,14 +76,14 @@ func longestPalindrome(s string) string {
 		}
 	}
 
-	radius := float64(p.Diameter/2 + 1)
+	radius := (float64(p.Diameter) - 1) / 2
 	rawIndex := (float64(p.Index) - 1) / 2
 
 	start := int(
-		math.Ceil(rawIndex-radius) + 1,
+		math.Ceil(rawIndex - radius),
 	)
 	end := int(
-		math.Floor(rawIndex + radius),
+		math.Floor(rawIndex+radius) + 1,
 	)
 	return s[start:end]
 }
